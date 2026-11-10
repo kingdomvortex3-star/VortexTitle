@@ -1,0 +1,76 @@
+settings:
+  prefix: "<gradient:#00E5FF:#5865F2><bold>VortexTitle</bold></gradient> <dark_gray>»</dark_gray> "
+
+  max-titles-per-player: 0
+
+  allow-select-command: true
+
+gui:
+  title: "<gradient:#00E5FF:#5865F2><bold>Title Collection</bold></gradient>"
+
+  rows: 6
+
+  title-slots:
+    - 10
+    - 11
+    - 12
+    - 13
+    - 14
+    - 15
+    - 16
+    - 19
+    - 20
+    - 21
+    - 22
+    - 23
+    - 24
+    - 25
+    - 28
+    - 29
+    - 30
+    - 31
+    - 32
+    - 33
+    - 34
+
+  previous-slot: 45
+  close-slot: 49
+  next-slot: 53
+  reset-slot: 47
+
+  filler:
+    enabled: true
+    material: BLACK_STAINED_GLASS_PANE
+    name: " "
+
+messages:
+  no-permission: "<red>You do not have permission."
+  player-only: "<red>Only players can use this command."
+  player-not-found: "<red>Player not found: <white>{player}"
+  invalid-title: "<red>Title cannot be empty."
+
+  given: "<green>Successfully gave {title} <green>to <white>{player}<green>. ID: <aqua>{id}"
+  already-owned: "<yellow>Player already owns this title. ID: <aqua>{id}"
+
+  taken: "<green>Removed title <white>{id}<green> from <white>{player}"
+  not-owned: "<red>Player does not own title ID <white>{id}"
+  all-taken: "<green>All titles removed from <white>{player}"
+
+  selected: "<green>Active title changed to {title}"
+  reset: "<green>Your active title has been reset."
+
+  no-active: "<yellow>You do not have an active title."
+  no-titles: "<yellow>You do not own any titles yet."
+
+  reload: "<green>Configuration reloaded."
+
+  max-titles: "<red>Player reached the maximum title limit."
+
+  select-disabled: "<red>Direct selection is disabled."
+
+  list-header: "<aqua>Titles owned by <white>{player}<aqua>:"
+  list-empty: "<yellow>This player has no titles."
+
+  database-error: "<red>Database error. Contact an administrator."
+
+  usage: "<yellow>/title <gui|give|take|list|owned|select|reset|reload>"
