@@ -5,6 +5,17 @@ settings:
 
   allow-select-command: true
 
+title-colors:
+  enabled: true
+
+  formats:
+    WARRIOR: "<gradient:#00FFFF:#0000FF>WARRIOR</gradient>"
+    LEGEND: "<gradient:#FFD700:#FF8C00>LEGEND</gradient>"
+    MYTHICAL: "<rainbow>MYTHICAL</rainbow>"
+    PRIME: "<gradient:#FF0000:#FFD700><bold>PRIME</bold></gradient>"
+
+  default-format: "<gradient:#00E5FF:#5865F2>{title}</gradient>"
+
 gui:
   title: "<gradient:#00E5FF:#5865F2><bold>Title Collection</bold></gradient>"
 
