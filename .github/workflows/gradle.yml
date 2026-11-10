@@ -27,15 +27,14 @@ jobs:
         with:
           java-version: '25'
           distribution: temurin
-          cache: gradle
 
-      - name: Setup Gradle
+      - name: Setup Gradle 9.2.1
         uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '9.2.1'
 
       - name: Build Plugin
-        run: |
-          chmod +x gradlew
-          ./gradlew clean build
+        run: gradle clean build
 
       - name: Upload Plugin JAR
         uses: actions/upload-artifact@v4
