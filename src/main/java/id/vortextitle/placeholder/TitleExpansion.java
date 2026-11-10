@@ -3,6 +3,7 @@ package id.vortextitle.placeholder;
 
 import id.vortextitle.VortexTitlePlugin;
 import id.vortextitle.manager.TitleManager;
+import id.vortextitle.manager.TitleFormatter;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 
@@ -22,7 +23,6 @@ public final class TitleExpansion extends PlaceholderExpansion {
             VortexTitlePlugin plugin,
             TitleManager manager
     ) {
-
         this.plugin = plugin;
         this.manager = manager;
     }
@@ -58,76 +58,45 @@ public final class TitleExpansion extends PlaceholderExpansion {
         }
 
         try {
-
             String lower = params.toLowerCase(Locale.ROOT);
             UUID uuid = player.getUniqueId();
 
-            /*
-             * %vortextitle_title%
-             *
-             * Returns the player's active title with config formatting.
-             */
+            // %vortextitle_title%
             if (lower.equals("title")) {
-
                 String rawTitle = manager.getActiveTitle(uuid);
 
                 return rawTitle == null
                         ? ""
-                        : manager.formatTitle(rawTitle)
-                                .letLegacy();
+                        : TitleFormatter.formatTitleLegacy(
+                                rawTitle,
+                                plugin.getConfig()
+                        );
             }
 
-            /*
-             * %vortextitle_title_id%
-             *
-             * Returns the active title ID.
-             */
+            // %vortextitle_title_id%
             if (lower.equals("title_id")) {
-
                 String id = manager.getActiveId(uuid);
 
                 return id == null ? "" : id;
             }
 
-            /*
-             * %vortextitle_count%
-             *
-             * Returns the number of owned titles.
-             */
+            // %vortextitle_count%
             if (lower.equals("count")) {
-
-                return String.valueOf(
-                        manager.count(uuid)
-                );
+                return String.valueOf(manager.count(uuid));
             }
 
-            /*
-             * %vortextitle_has_title_<id>%
-             *
-             * Checks whether the player owns a title ID.
-             */
+            // %vortextitle_has_title_<id>%
             if (lower.startsWith("has_title_")) {
+                String id = params.substring("has_title_".length());
 
-                String id = params.substring(
-                        "has_title_".length()
-                );
-
-                return manager.getTitle(
-                        uuid,
-                        id
-                ) == null ? "false" : "true";
+                return manager.getTitle(uuid, id) == null
+                        ? "false"
+                        : "true";
             }
 
-            /*
-             * %vortextitle_player_<player>%
-             *
-             * Returns another player's active formatted title.
-             */
+            // %vortextitle_player_<player>%
             if (lower.startsWith("player_")) {
-
-                String targetName = params.substring(
-                        "player_".length()
-                );
+                String targetName = params.substring("player_".length());
 
                 if (targetName.isBlank()) {
                     return "";
@@ -142,12 +111,13 @@ public final class TitleExpansion extends PlaceholderExpansion {
 
                 return rawTitle == null
                         ? ""
-                        : manager.formatTitle(rawTitle)
-                                .letLegacy();
+                        : TitleFormatter.formatTitleLegacy(
+                                rawTitle,
+                                plugin.getConfig()
+                        );
             }
 
         } catch (SQLException exception) {
-
             plugin.getLogger().warning(
                     "Placeholder error: " + exception.getMessage()
             );
