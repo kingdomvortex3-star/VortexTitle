@@ -1,8 +1,13 @@
+
 package id.vortextitle.gui;
 
 import id.vortextitle.VortexTitlePlugin;
 import id.vortextitle.manager.TitleFormatter;
 import id.vortextitle.manager.TitleManager;
+
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+import net.kyori.adventure.text.TextReplacementConfig;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -16,11 +21,11 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
-
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 public final class TitleGUI implements Listener {
 
@@ -41,9 +46,12 @@ public final class TitleGUI implements Listener {
     }
 
     public void reloadSettings() {
-        // GUI reads settings directly from config.
+        // GUI reads the latest configuration directly.
     }
 
+    /**
+     * Opens the player's title collection GUI.
+     */
     public void open(Player player, int page) {
 
         try {
@@ -64,22 +72,58 @@ public final class TitleGUI implements Listener {
 
             int size = rows * 9;
 
-            List<Integer> slots =
+            List<Integer> slots = new ArrayList<>(
                     plugin.getConfig().getIntegerList(
                             "gui.title-slots"
-                    );
+                    )
+            );
 
             slots.removeIf(slot ->
-                    slot < 0 || slot >= size
+                    slot == null || slot < 0 || slot >= size
             );
 
             if (slots.isEmpty()) {
 
-                slots = new ArrayList<>(List.of(
-                        10, 11, 12, 13, 14, 15, 16,
-                        19, 20, 21, 22, 23, 24, 25,
-                        28, 29, 30, 31, 32, 33, 34
-                ));
+                slots = new ArrayList<>();
+
+                for (int slot = 0; slot < size; slot++) {
+                    slots.add(slot);
+                }
+            }
+
+            int previousSlot = plugin.getConfig().getInt(
+                    "gui.previous-slot",
+                    45
+            );
+
+            int closeSlot = plugin.getConfig().getInt(
+                    "gui.close-slot",
+                    49
+            );
+
+            int nextSlot = plugin.getConfig().getInt(
+                    "gui.next-slot",
+                    53
+            );
+
+            int resetSlot = plugin.getConfig().getInt(
+                    "gui.reset-slot",
+                    47
+            );
+
+            /*
+             * Do not use navigation slots for title items.
+             */
+            slots.removeIf(slot ->
+                    slot == previousSlot
+                            || slot == closeSlot
+                            || slot == nextSlot
+                            || slot == resetSlot
+            );
+
+            if (slots.isEmpty()) {
+                player.sendMessage(message("database-error"));
+                return;
             }
 
             int perPage = slots.size();
@@ -112,6 +156,9 @@ public final class TitleGUI implements Listener {
 
             holder.setInventory(inventory);
 
+            /*
+             * Filler items.
+             */
             if (plugin.getConfig().getBoolean(
                     "gui.filler.enabled",
                     true
@@ -124,7 +171,7 @@ public final class TitleGUI implements Listener {
                         )
                 );
 
-                if (material == null) {
+                if (material == null || !material.isItem()) {
                     material = Material.BLACK_STAINED_GLASS_PANE;
                 }
 
@@ -146,6 +193,9 @@ public final class TitleGUI implements Listener {
                     player.getUniqueId()
             );
 
+            /*
+             * Display owned titles.
+             */
             for (int i = 0; i < perPage; i++) {
 
                 int index = safePage * perPage + i;
@@ -157,7 +207,11 @@ public final class TitleGUI implements Listener {
                 Map.Entry<String, String> entry =
                         entries.get(index);
 
-                boolean active = entry.getKey().equals(activeId);
+                String id = entry.getKey();
+                String rawTitle = entry.getValue();
+
+                boolean active = activeId != null
+                        && id.equalsIgnoreCase(activeId);
 
                 List<Component> lore = new ArrayList<>();
 
@@ -171,9 +225,17 @@ public final class TitleGUI implements Listener {
 
                 lore.add(
                         TitleFormatter.parse(
-                                "<dark_gray>ID: <gray>" + entry.getKey()
+                                "<dark_gray>ID: <gray>" + id
                         )
                 );
+
+                /*
+                 * IMPORTANT:
+                 * Format the title using title-colors in config.yml.
+                 * The database still stores only the plain title.
+                 */
+                Component formattedTitle =
+                        manager.formatTitle(rawTitle);
 
                 inventory.setItem(
                         slots.get(i),
@@ -181,32 +243,15 @@ public final class TitleGUI implements Listener {
                                 active
                                         ? Material.ENCHANTED_BOOK
                                         : Material.NAME_TAG,
-                                entry.getValue(),
+                                formattedTitle,
                                 lore
                         )
                 );
             }
 
-            int previousSlot = plugin.getConfig().getInt(
-                    "gui.previous-slot",
-                    45
-            );
-
-            int closeSlot = plugin.getConfig().getInt(
-                    "gui.close-slot",
-                    49
-            );
-
-            int nextSlot = plugin.getConfig().getInt(
-                    "gui.next-slot",
-                    53
-            );
-
-            int resetSlot = plugin.getConfig().getInt(
-                    "gui.reset-slot",
-                    47
-            );
-
+            /*
+             * Previous page.
+             */
             if (safePage > 0) {
 
                 setItem(
@@ -220,6 +265,9 @@ public final class TitleGUI implements Listener {
                 );
             }
 
+            /*
+             * Close button.
+             */
             setItem(
                     inventory,
                     closeSlot,
@@ -230,6 +278,9 @@ public final class TitleGUI implements Listener {
                     )
             );
 
+            /*
+             * Next page.
+             */
             if (safePage < maxPage) {
 
                 setItem(
@@ -243,6 +294,9 @@ public final class TitleGUI implements Listener {
                 );
             }
 
+            /*
+             * Reset active title.
+             */
             setItem(
                     inventory,
                     resetSlot,
@@ -269,10 +323,14 @@ public final class TitleGUI implements Listener {
         }
     }
 
+    /**
+     * Handles GUI clicks.
+     */
     @EventHandler
     public void onClick(InventoryClickEvent event) {
 
-        if (!(event.getView().getTopInventory()
+        if (!(event.getView()
+                .getTopInventory()
                 .getHolder(false) instanceof GuiHolder holder)) {
             return;
         }
@@ -296,36 +354,58 @@ public final class TitleGUI implements Listener {
         int slot = event.getSlot();
 
         int closeSlot = plugin.getConfig().getInt(
-                "gui.close-slot", 49
+                "gui.close-slot",
+                49
         );
 
         int previousSlot = plugin.getConfig().getInt(
-                "gui.previous-slot", 45
+                "gui.previous-slot",
+                45
         );
 
         int nextSlot = plugin.getConfig().getInt(
-                "gui.next-slot", 53
+                "gui.next-slot",
+                53
         );
 
         int resetSlot = plugin.getConfig().getInt(
-                "gui.reset-slot", 47
+                "gui.reset-slot",
+                47
         );
 
+        /*
+         * Close GUI.
+         */
         if (slot == closeSlot) {
+
             player.closeInventory();
             return;
         }
 
+        /*
+         * Previous page.
+         */
         if (slot == previousSlot) {
-            open(player, holder.page - 1);
+
+            if (holder.page > 0) {
+                open(player, holder.page - 1);
+            }
+
             return;
         }
 
+        /*
+         * Next page.
+         */
         if (slot == nextSlot) {
+
             open(player, holder.page + 1);
             return;
         }
 
+        /*
+         * Reset active title.
+         */
         if (slot == resetSlot) {
 
             try {
@@ -345,12 +425,20 @@ public final class TitleGUI implements Listener {
 
             } catch (SQLException exception) {
 
+                plugin.getLogger().severe(
+                        "Could not reset active title: "
+                                + exception.getMessage()
+                );
+
                 player.sendMessage(message("database-error"));
             }
 
             return;
         }
 
+        /*
+         * Read clicked title item.
+         */
         ItemStack clicked = event.getCurrentItem();
 
         if (clicked == null || !clicked.hasItemMeta()) {
@@ -375,32 +463,41 @@ public final class TitleGUI implements Listener {
 
         String id = idLine.substring(4).trim();
 
+        if (id.isEmpty()) {
+            return;
+        }
+
         try {
 
-            String raw = manager.getTitle(
+            String rawTitle = manager.getTitle(
                     player.getUniqueId(),
                     id
             );
 
-            if (raw == null) {
+            if (rawTitle == null) {
                 return;
             }
 
-            if (!manager.select(player.getUniqueId(), id)) {
+            if (!manager.select(
+                    player.getUniqueId(),
+                    id
+            )) {
                 return;
             }
+
+            /*
+             * Use the same configured title format in confirmation.
+             */
+            Component formattedTitle =
+                    manager.formatTitle(rawTitle);
 
             player.sendMessage(
-                    message("selected")
-                            .replaceText(
-                                    net.kyori.adventure.text
-                                            .TextReplacementConfig.builder()
-                                            .matchLiteral("{title}")
-                                            .replacement(
-                                                    TitleFormatter.parse(raw)
-                                            )
-                                            .build()
-                            )
+                    message("selected").replaceText(
+                            TextReplacementConfig.builder()
+                                    .matchLiteral("{title}")
+                                    .replacement(formattedTitle)
+                                    .build()
+                    )
             );
 
             player.playSound(
@@ -414,13 +511,37 @@ public final class TitleGUI implements Listener {
 
         } catch (SQLException exception) {
 
+            plugin.getLogger().severe(
+                    "Could not select title: "
+                            + exception.getMessage()
+            );
+
             player.sendMessage(message("database-error"));
         }
     }
 
+    /**
+     * Creates an item using a MiniMessage string.
+     */
     private ItemStack createItem(
             Material material,
             String name,
+            List<Component> lore
+    ) {
+
+        return createItem(
+                material,
+                TitleFormatter.parse(name),
+                lore
+        );
+    }
+
+    /**
+     * Creates an item using an already formatted Component.
+     */
+    private ItemStack createItem(
+            Material material,
+            Component name,
             List<Component> lore
     ) {
 
@@ -428,11 +549,9 @@ public final class TitleGUI implements Listener {
 
         ItemMeta meta = item.getItemMeta();
 
-        meta.displayName(
-                TitleFormatter.parse(name)
-        );
+        meta.displayName(name);
 
-        if (!lore.isEmpty()) {
+        if (lore != null && !lore.isEmpty()) {
             meta.lore(lore);
         }
 
@@ -441,6 +560,9 @@ public final class TitleGUI implements Listener {
         return item;
     }
 
+    /**
+     * Safely places an item in the inventory.
+     */
     private void setItem(
             Inventory inventory,
             int slot,
@@ -452,6 +574,9 @@ public final class TitleGUI implements Listener {
         }
     }
 
+    /**
+     * Gets a prefixed message from config.yml.
+     */
     private Component message(String key) {
 
         String prefix = plugin.getConfig().getString(
@@ -467,6 +592,9 @@ public final class TitleGUI implements Listener {
         return TitleFormatter.parse(prefix + text);
     }
 
+    /**
+     * Custom inventory holder.
+     */
     private static final class GuiHolder
             implements InventoryHolder {
 
@@ -475,7 +603,10 @@ public final class TitleGUI implements Listener {
 
         private Inventory inventory;
 
-        private GuiHolder(UUID owner, int page) {
+        private GuiHolder(
+                UUID owner,
+                int page
+        ) {
 
             this.owner = owner;
             this.page = page;
@@ -490,4 +621,4 @@ public final class TitleGUI implements Listener {
             return inventory;
         }
     }
-              }
+}
