@@ -1,0 +1,31 @@
+name: VortexTitle
+version: '${version}'
+main: id.vortextitle.VortexTitlePlugin
+api-version: '26.3'
+author: Vortex Network
+description: Permanent Custom Title System
+softdepend:
+  - PlaceholderAPI
+
+commands:
+  title:
+    description: VortexTitle Main Command
+    usage: /title
+    aliases:
+      - titles
+
+permissions:
+  vortextitle.use:
+    default: true
+
+  vortextitle.admin:
+    default: op
+
+  vortextitle.give:
+    default: op
+
+  vortextitle.take:
+    default: op
+
+  vortextitle.reload:
+    default: op
