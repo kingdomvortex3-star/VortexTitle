@@ -1,7 +1,7 @@
+
 package id.vortextitle.placeholder;
 
 import id.vortextitle.VortexTitlePlugin;
-import id.vortextitle.manager.TitleFormatter;
 import id.vortextitle.manager.TitleManager;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
@@ -11,9 +11,9 @@ import org.bukkit.OfflinePlayer;
 
 import java.sql.SQLException;
 import java.util.Locale;
+import java.util.UUID;
 
-public final class TitleExpansion
-        extends PlaceholderExpansion {
+public final class TitleExpansion extends PlaceholderExpansion {
 
     private final VortexTitlePlugin plugin;
     private final TitleManager manager;
@@ -34,7 +34,7 @@ public final class TitleExpansion
 
     @Override
     public String getAuthor() {
-        return "Vortex Network";
+        return "Vortex Teams";
     }
 
     @Override
@@ -53,41 +53,59 @@ public final class TitleExpansion
             String params
     ) {
 
-        if (player == null) {
+        if (player == null || params == null || params.isEmpty()) {
             return "";
         }
 
         try {
 
             String lower = params.toLowerCase(Locale.ROOT);
+            UUID uuid = player.getUniqueId();
 
+            /*
+             * %vortextitle_title%
+             *
+             * Returns the player's active title with config formatting.
+             */
             if (lower.equals("title")) {
 
-                String title = manager.getActiveTitle(
-                        player.getUniqueId()
-                );
+                String rawTitle = manager.getActiveTitle(uuid);
 
-                return title == null
+                return rawTitle == null
                         ? ""
-                        : TitleFormatter.toLegacy(title);
+                        : manager.formatTitle(rawTitle)
+                                .letLegacy();
             }
 
+            /*
+             * %vortextitle_title_id%
+             *
+             * Returns the active title ID.
+             */
             if (lower.equals("title_id")) {
 
-                String id = manager.getActiveId(
-                        player.getUniqueId()
-                );
+                String id = manager.getActiveId(uuid);
 
                 return id == null ? "" : id;
             }
 
+            /*
+             * %vortextitle_count%
+             *
+             * Returns the number of owned titles.
+             */
             if (lower.equals("count")) {
 
                 return String.valueOf(
-                        manager.count(player.getUniqueId())
+                        manager.count(uuid)
                 );
             }
 
+            /*
+             * %vortextitle_has_title_<id>%
+             *
+             * Checks whether the player owns a title ID.
+             */
             if (lower.startsWith("has_title_")) {
 
                 String id = params.substring(
@@ -95,27 +113,37 @@ public final class TitleExpansion
                 );
 
                 return manager.getTitle(
-                        player.getUniqueId(),
+                        uuid,
                         id
                 ) == null ? "false" : "true";
             }
 
+            /*
+             * %vortextitle_player_<player>%
+             *
+             * Returns another player's active formatted title.
+             */
             if (lower.startsWith("player_")) {
 
                 String targetName = params.substring(
                         "player_".length()
                 );
 
+                if (targetName.isBlank()) {
+                    return "";
+                }
+
                 OfflinePlayer target =
                         Bukkit.getOfflinePlayer(targetName);
 
-                String title = manager.getActiveTitle(
+                String rawTitle = manager.getActiveTitle(
                         target.getUniqueId()
                 );
 
-                return title == null
+                return rawTitle == null
                         ? ""
-                        : TitleFormatter.toLegacy(title);
+                        : manager.formatTitle(rawTitle)
+                                .letLegacy();
             }
 
         } catch (SQLException exception) {
