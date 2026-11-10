@@ -19,10 +19,13 @@ repositories {
 }
 
 dependencies {
+    // Paper / Purpur API
     compileOnly 'io.papermc.paper:paper-api:26.3.build.+'
 
+    // Optional PlaceholderAPI integration
     compileOnly 'me.clip:placeholderapi:2.11.6'
 
+    // SQLite bundled inside the final plugin JAR
     implementation 'org.xerial:sqlite-jdbc:3.50.3.0'
 }
 
@@ -45,8 +48,17 @@ processResources {
     }
 }
 
-shadowJar {
-    archiveClassifier = ''
+// Keep the normal JAR separate from the shaded JAR.
+tasks.named('jar') {
+    archiveClassifier.set('plain')
+}
+
+// Build the final plugin JAR with SQLite included.
+tasks.named('shadowJar') {
+    archiveClassifier.set('')
+
+    // Preserve JDBC service provider metadata.
+    mergeServiceFiles()
 
     relocate(
         'org.sqlite',
@@ -54,6 +66,6 @@ shadowJar {
     )
 }
 
-tasks.build {
-    dependsOn tasks.shadowJar
+tasks.named('build') {
+    dependsOn tasks.named('shadowJar')
 }
