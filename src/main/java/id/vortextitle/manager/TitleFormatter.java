@@ -1,10 +1,15 @@
+
 package id.vortextitle.manager;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.Locale;
 import java.util.regex.Matcher;
@@ -18,6 +23,9 @@ public final class TitleFormatter {
     private static final LegacyComponentSerializer LEGACY =
             LegacyComponentSerializer.legacySection();
 
+    private static final LegacyComponentSerializer LEGACY_AMPERSAND =
+            LegacyComponentSerializer.legacyAmpersand();
+
     private static final Pattern AMP_HEX =
             Pattern.compile("(?i)&#([0-9a-f]{6})");
 
@@ -30,8 +38,14 @@ public final class TitleFormatter {
     private static final Pattern LEGACY_CODES =
             Pattern.compile("(?i)[&§]([0-9a-fk-or])");
 
-    private TitleFormatter() {}
+    private static final String TITLE_PLACEHOLDER = "<vortex_title>";
 
+    private TitleFormatter() {
+    }
+
+    /**
+     * Parses MiniMessage, HEX, RGB and legacy formatting.
+     */
     public static Component parse(String input) {
 
         if (input == null || input.isEmpty()) {
@@ -39,33 +53,144 @@ public final class TitleFormatter {
         }
 
         String converted = convertRGB(input);
-
         converted = convertLegacy(converted);
 
         try {
-
             return MINI.deserialize(converted);
 
         } catch (Exception exception) {
 
             try {
-
-                return LegacyComponentSerializer
-                        .legacyAmpersand()
-                        .deserialize(input);
+                return LEGACY_AMPERSAND.deserialize(input);
 
             } catch (Exception ignored) {
-
                 return Component.text(input);
             }
         }
     }
 
+    /**
+     * Formats a plain title using the title-colors section
+     * from config.yml.
+     *
+     * The stored title is always treated as literal text.
+     */
+    public static Component formatTitle(
+            String rawTitle,
+            FileConfiguration config
+    ) {
+
+        if (rawTitle == null || rawTitle.isEmpty()) {
+            return Component.empty();
+        }
+
+        if (config == null) {
+            return Component.text(rawTitle);
+        }
+
+        ConfigurationSection section =
+                config.getConfigurationSection("title-colors");
+
+        if (section == null) {
+            return Component.text(rawTitle);
+        }
+
+        if (!section.getBoolean("enabled", true)) {
+            return Component.text(rawTitle);
+        }
+
+        String selectedFormat = null;
+
+        ConfigurationSection formats =
+                section.getConfigurationSection("formats");
+
+        /*
+         * Find title format without case sensitivity.
+         */
+        if (formats != null) {
+
+            for (String key : formats.getKeys(false)) {
+
+                if (key.equalsIgnoreCase(rawTitle)) {
+
+                    selectedFormat = formats.getString(key);
+                    break;
+                }
+            }
+        }
+
+        /*
+         * Use default-format when no custom format exists.
+         */
+        if (selectedFormat == null || selectedFormat.isEmpty()) {
+
+            selectedFormat = section.getString(
+                    "default-format",
+                    "{title}"
+            );
+        }
+
+        if (selectedFormat == null || selectedFormat.isEmpty()) {
+            return Component.text(rawTitle);
+        }
+
+        /*
+         * Replace {title} with a dedicated MiniMessage placeholder.
+         * Placeholder.component prevents raw title text from being
+         * interpreted as MiniMessage formatting.
+         */
+        String preparedFormat = selectedFormat.replace(
+                "{title}",
+                TITLE_PLACEHOLDER
+        );
+
+        try {
+
+            String converted = convertRGB(preparedFormat);
+            converted = convertLegacy(converted);
+
+            return MINI.deserialize(
+                    converted,
+                    Placeholder.component(
+                            "vortex_title",
+                            Component.text(rawTitle)
+                    )
+            );
+
+        } catch (Exception exception) {
+
+            /*
+             * If the configured format is invalid,
+             * safely display the original title.
+             */
+            return Component.text(rawTitle);
+        }
+    }
+
+    /**
+     * Returns the formatted title as legacy text.
+     */
+    public static String formatTitleLegacy(
+            String rawTitle,
+            FileConfiguration config
+    ) {
+
+        return LEGACY.serialize(
+                formatTitle(rawTitle, config)
+        );
+    }
+
+    /**
+     * Converts a formatted string into legacy section text.
+     */
     public static String toLegacy(String input) {
 
         return LEGACY.serialize(parse(input));
     }
 
+    /**
+     * Removes formatting and returns plain text.
+     */
     public static String plain(String input) {
 
         return PlainTextComponentSerializer
@@ -73,6 +198,27 @@ public final class TitleFormatter {
                 .serialize(parse(input));
     }
 
+    /**
+     * Converts the formatted title component into plain text.
+     */
+    public static String plainTitle(
+            String rawTitle,
+            FileConfiguration config
+    ) {
+
+        return PlainTextComponentSerializer
+                .plainText()
+                .serialize(formatTitle(rawTitle, config));
+    }
+
+    /**
+     * Converts supported HEX and RGB formats into MiniMessage.
+     *
+     * Supported:
+     * &#RRGGBB
+     * §x§R§R§G§G§B§B
+     * &x&R&R&G&G&B&B
+     */
     private static String convertRGB(String input) {
 
         Matcher matcher = AMP_HEX.matcher(input);
@@ -81,9 +227,12 @@ public final class TitleFormatter {
 
         while (matcher.find()) {
 
+            String replacement =
+                    "<#" + matcher.group(1).toUpperCase(Locale.ROOT) + ">";
+
             matcher.appendReplacement(
                     output,
-                    "<#" + matcher.group(1).toUpperCase(Locale.ROOT) + ">"
+                    Matcher.quoteReplacement(replacement)
             );
         }
 
@@ -100,9 +249,12 @@ public final class TitleFormatter {
             String hex = matcher.group(1)
                     .replace("§", "");
 
+            String replacement =
+                    "<#" + hex.toUpperCase(Locale.ROOT) + ">";
+
             matcher.appendReplacement(
                     output,
-                    "<#" + hex.toUpperCase(Locale.ROOT) + ">"
+                    Matcher.quoteReplacement(replacement)
             );
         }
 
@@ -119,9 +271,12 @@ public final class TitleFormatter {
             String hex = matcher.group(1)
                     .replace("&", "");
 
+            String replacement =
+                    "<#" + hex.toUpperCase(Locale.ROOT) + ">";
+
             matcher.appendReplacement(
                     output,
-                    "<#" + hex.toUpperCase(Locale.ROOT) + ">"
+                    Matcher.quoteReplacement(replacement)
             );
         }
 
@@ -130,6 +285,13 @@ public final class TitleFormatter {
         return output.toString();
     }
 
+    /**
+     * Converts legacy color codes into MiniMessage tags.
+     *
+     * Supports:
+     * &a, &b, &c, &l, &o, &n, &m, &k, &r
+     * §a, §b, §c, §l, §o, §n, §m, §k, §r
+     */
     private static String convertLegacy(String input) {
 
         Matcher matcher = LEGACY_CODES.matcher(input);
@@ -191,4 +353,4 @@ public final class TitleFormatter {
 
         return output.toString();
     }
-  }
+}
