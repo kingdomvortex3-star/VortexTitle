@@ -1,106 +1,113 @@
 ⚡ Vortex Title
 
 <p align="center">
-  <img src="assets/vortex-title-banner.png" width="100%" alt="Vortex Title - Advanced Custom Title System"/>
+  <img src="./assets/vortex-title-banner.png" width="100%" alt="Vortex Title - Advanced Custom Title System"/>
 </p><p align="center">
   <b>ADVANCED PERMANENT CUSTOM TITLE SYSTEM</b>
   <br/>
   <i>Your Titles. Your Identity. Your Collection.</i>
 </p><p align="center">
   <img src="https://img.shields.io/badge/Version-1.0.0-9B5CFF?style=for-the-badge"/>
-  <img src="https://img.shields.io/badge/Java-25-orange?style=for-the-badge&logo=openjdk&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Java-25-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white"/>
   <img src="https://img.shields.io/badge/Minecraft-26.3-3C8527?style=for-the-badge&logo=minecraft&logoColor=white"/>
   <img src="https://img.shields.io/badge/Platform-Paper%20%7C%20Purpur-blue?style=for-the-badge"/>
 </p><p align="center">
   <b>Developed with ❤️ by Vortex Teams</b>
 </p>---
 
-📖 About Vortex Title
+📖・About Vortex Title
 
-Vortex Title is an advanced Minecraft title management plugin designed to bring a customizable and permanent title collection experience to modern Minecraft servers.
+Vortex Title is an advanced Minecraft title management plugin designed to provide a permanent, customizable, and flexible title collection experience.
 
-Unlike traditional title systems that rely on a single predefined prefix, Vortex Title allows administrators to create and distribute completely customized titles directly to players.
+Built for modern Minecraft servers, Vortex Title allows administrators and staff members to create and distribute custom titles directly to players without manually registering every title in configuration files.
 
-Every granted title becomes part of the player's personal collection. Players can browse their collection through an interactive inventory GUI and switch between previously obtained titles whenever they want.
+Every granted title becomes part of the player's permanent collection.
 
-Whether you're running a Survival, RPG, Economy, SkyBlock, or SMP server, Vortex Title provides a flexible foundation for building your own title progression and reward system.
+Players can access their personal collection through an interactive GUI, browse previously obtained titles, and freely switch between their owned titles whenever they want.
 
-🎯 What Makes It Different?
+Whether you're running a Survival, RPG, Economy, SkyBlock, or SMP server, Vortex Title provides a flexible title management solution for your community.
 
-- Permanent Ownership — Granted titles are stored permanently.
-- Custom Title Creation — Staff can create titles without manually registering each title in configuration files.
-- Personal Collections — Players can own multiple titles simultaneously.
-- Flexible Selection — Players can switch between titles they already own.
-- Advanced Formatting — Create visually unique titles using MiniMessage, HEX, RGB, Gradient, and Legacy formatting.
-- Persistent Storage — Player collections and active selections are stored using SQLite.
+🎯・Why Vortex Title?
+
+- 🎖️ Permanent title ownership.
+- 👑 Custom title creation by staff.
+- 📚 Multiple titles per player.
+- 🔄 Freely switch between owned titles.
+- 🎨 Advanced text formatting support.
+- 💾 Persistent SQLite storage.
+- 🔗 PlaceholderAPI integration.
+- 🖥️ Interactive title collection GUI.
 
 ---
 
-✨ Core Features
+✨・Core Features
 
 🎖️ Permanent Title Collection
 
-Players can collect multiple titles without losing previously obtained ones.
+Players can collect multiple titles without losing previously obtained titles.
 
-Each title is individually associated with its owner and stored in the database.
+Every granted title is stored individually and remains available in the player's collection.
 
-👑 Staff Title Management
+👑 Custom Staff Management
 
-Administrators can grant custom titles directly to players using commands.
+Staff members can grant custom titles directly using commands.
 
-There is no need to manually create every title in a configuration file.
+Titles can contain custom names, colors, gradients, and supported text formatting.
+
+There is no need to manually register every title in a configuration file.
 
 🖥️ Interactive Title GUI
 
-Players can access their personal title collection through an inventory-based interface.
+Players can manage their collected titles through an interactive inventory interface.
 
-The GUI provides:
+GUI Features:
 
-- View owned titles.
-- Identify the currently selected title.
-- Select another owned title.
-- Navigate between collection pages.
-- Reset the currently selected title without deleting ownership.
+- 📚 Browse owned titles.
+- ⭐ Identify the currently selected title.
+- 🎖️ Select previously obtained titles.
+- 📄 Navigate through multiple pages.
+- 🔄 Reset the currently active title.
+- 💎 Display formatted custom title names.
 
-🎨 Advanced Text Formatting
+🎨 Advanced Formatting
 
-Create visually impressive titles using supported Minecraft text formatting systems.
+Create visually impressive titles using multiple Minecraft text formatting systems.
 
-Supported input formats include:
+Supported input formats:
 
-- Adventure MiniMessage
-- HEX Colors
-- RGB Colors
-- Gradient
-- Rainbow
-- Legacy Color Codes
-- Formatting Tags
+- Adventure MiniMessage.
+- HEX Colors.
+- RGB Colors.
+- Gradient.
+- Rainbow.
+- Legacy Color Codes.
+- RGBirdflop-compatible color codes.
 
-💾 SQLite Data Storage
+💾 SQLite Database
 
-Player collections are stored persistently in an SQLite database.
+Vortex Title uses SQLite for persistent player title storage.
 
-Title ownership is retained across player disconnects and server restarts.
+Player collections and active title selections are retained across disconnects and server restarts.
 
 🔗 PlaceholderAPI Integration
 
-Retrieve active titles and collection information through PlaceholderAPI.
+Retrieve player title information through PlaceholderAPI.
 
-Use the provided placeholders in compatible plugins.
+Integrate active titles with compatible chat, scoreboard, TAB, and other plugins.
 
 ⚙️ Configuration Management
 
-Customize the plugin's prefix, messages, GUI appearance, collection limits, and selection settings.
+Customize plugin messages, prefixes, GUI appearance, collection limits, and selection settings.
 
-🔄 Live Configuration Reload
+🔃 Configuration Reload
 
-Reload configuration files without requiring a complete server restart.
+Reload supported configuration files without restarting the Minecraft server.
 
 ---
 
-🎨 Advanced Formatting Showcase
+🎨・Advanced Formatting Showcase
 
-Vortex Title supports several text formatting styles to help administrators create unique and visually appealing titles.
+Vortex Title supports multiple text formatting systems for creating unique and colorful custom titles.
 
 🌈 Gradient
 
@@ -114,7 +121,7 @@ Vortex Title supports several text formatting styles to help administrators crea
 
 &#00FFFFWARRIOR
 
-🌈 RGBirdflop-Compatible Input
+🌈 RGBirdflop Format
 
 &x&0&0&F&F&F&F VORTEX
 
@@ -126,19 +133,61 @@ Vortex Title supports several text formatting styles to help administrators crea
 
 <bold>LEGEND</bold>
 
-📐 Additional MiniMessage Formatting
+📐 Italic
 
 <italic>ELITE</italic>
+
+📏 Underline
+
 <underlined>SUPREME</underlined>
+
+🔥 Strikethrough
+
 <strikethrough>EXCLUSIVE</strikethrough>
 
-Formatting support is handled through the Adventure MiniMessage system and the plugin's color conversion layer.
+Additional Formatting
 
-«Note: The final appearance of RGB and advanced formatting depends on the compatibility of the plugin displaying the PlaceholderAPI result.»
+Adventure MiniMessage also supports additional styling, decorations, and text effects.
+
+Formatting compatibility depends on the input parser and the plugin displaying the resulting text.
 
 ---
 
-💻 Command Documentation
+📦・Installation Guide
+
+📋 Requirements
+
+Component| Requirement
+Java| 25
+Minecraft| 26.3
+Server Software| Paper / Purpur
+PlaceholderAPI| Optional
+Database| SQLite
+
+🚀 Installation Steps
+
+1. Download or build the Vortex Title JAR.
+
+2. Place the JAR inside your server's "plugins" directory.
+
+3. Install PlaceholderAPI if you need placeholder integration.
+
+4. Restart your Minecraft server.
+
+5. Open the generated Vortex Title configuration folder.
+
+6. Customize the configuration according to your server requirements.
+
+📁 Plugin Directory
+
+plugins/
+└── VortexTitle/
+    ├── config.yml
+    └── titles.db
+
+---
+
+💻・Command Documentation
 
 👤 Player Commands
 
@@ -158,13 +207,13 @@ Opens the title selection interface.
 
 /title owned
 
-Displays all titles currently owned by the player, including their IDs.
+Displays all titles currently owned by the player.
 
 🎖️ Select an Owned Title
 
 /title select <id>
 
-Sets an owned title as the player's active title.
+Selects a previously obtained title using its unique ID.
 
 🔄 Reset Active Title
 
@@ -178,7 +227,7 @@ Removes the currently selected title without deleting the player's collection.
 
 /title give <player> <title>
 
-Grants a permanent custom title to a player.
+Grants a permanent custom title to the specified player.
 
 Example:
 
@@ -210,26 +259,44 @@ Reloads Vortex Title configuration files.
 
 ---
 
-🔐 Permission System
+🔐・Permission System
+
+Permissions are separated between regular players and staff members for easier permission management.
 
 👤 Player Permissions
 
-Permission| Description| Default
-"vortextitle.use"| Access the title collection| "true"
+"vortextitle.use"
+
+- Description: Access the title collection.
+- Default: "true"
 
 👑 Staff Permissions
 
-Permission| Description| Default
-"vortextitle.admin"| Full administration access| "OP"
-"vortextitle.give"| Grant custom titles| "OP"
-"vortextitle.take"| Remove player titles| "OP"
-"vortextitle.reload"| Reload plugin configuration| "OP"
+"vortextitle.admin"
+
+- Description: Full administration access.
+- Default: "OP"
+
+"vortextitle.give"
+
+- Description: Grant custom titles to players.
+- Default: "OP"
+
+"vortextitle.take"
+
+- Description: Remove titles from player collections.
+- Default: "OP"
+
+"vortextitle.reload"
+
+- Description: Reload plugin configuration.
+- Default: "OP"
 
 ---
 
-🔗 PlaceholderAPI Integration
+🔗・PlaceholderAPI Integration
 
-Vortex Title provides PlaceholderAPI expansion support for retrieving title information.
+Vortex Title provides PlaceholderAPI integration for retrieving title information and displaying player titles in compatible plugins.
 
 🏷️ Available Placeholders
 
@@ -271,23 +338,23 @@ false
 
 Retrieves another player's currently selected title.
 
-🔧 Integration Possibilities
+🔧 Compatible Integrations
 
-Use Vortex Title placeholders in compatible:
+Vortex Title placeholders can be used with compatible:
 
-- 💬 Chat formatting plugins
-- 📊 Scoreboard plugins
-- 📑 TAB plugins
-- 🖥️ GUI plugins
-- 🔌 Other PlaceholderAPI integrations
+- 💬 Chat formatting plugins.
+- 📊 Scoreboard plugins.
+- 📑 TAB plugins.
+- 🖥️ GUI plugins.
+- 🔌 Other PlaceholderAPI integrations.
 
-PlaceholderAPI is optional and can be installed separately.
+Note: PlaceholderAPI is optional and must be installed separately.
 
 ---
 
-⚙️ Configuration
+⚙️・Configuration
 
-Vortex Title provides configurable settings to adapt the plugin to your server's requirements.
+Vortex Title provides configurable settings to adapt the plugin to different server environments.
 
 📄 Main Configuration
 
@@ -305,24 +372,37 @@ gui:
 
 🔧 Configuration Options
 
-Setting| Description
-"prefix"| Custom plugin message prefix
-"max-titles-per-player"| Maximum number of owned titles
-"allow-select-command"| Enables direct title selection commands
-"gui.title"| Custom inventory title
-"gui.rows"| Inventory size
+"settings.prefix"
 
-💡 Unlimited Collection
+Customizes the plugin message prefix.
 
-Set the following value to "0" to allow unlimited title ownership:
+"settings.max-titles-per-player"
+
+Sets the maximum number of titles a player can own.
+
+"settings.allow-select-command"
+
+Controls whether players can select titles using commands.
+
+"gui.title"
+
+Sets the inventory GUI title.
+
+"gui.rows"
+
+Sets the inventory size.
+
+♾️ Unlimited Collection
+
+Set the following value to "0" to allow unlimited title collections.
 
 max-titles-per-player: 0
 
 ---
 
-💾 Database & Data Management
+💾・Database & Data Storage
 
-Vortex Title uses SQLite for persistent player data storage.
+Vortex Title uses SQLite to store player title collections and active selections.
 
 📂 Database Location
 
@@ -330,11 +410,11 @@ plugins/VortexTitle/titles.db
 
 📋 Stored Information
 
-- Player UUID
-- Owned title IDs
-- Original title formatting
-- Title creation timestamps
-- Currently selected title ID
+- 🆔 Player UUID.
+- 🎖️ Owned title IDs.
+- 🎨 Original title formatting.
+- 🕒 Title creation timestamps.
+- ⭐ Currently selected title ID.
 
 🔒 Data Persistence
 
@@ -342,70 +422,41 @@ Player title collections are stored independently of online player sessions.
 
 This allows players to retain their collected titles after disconnecting or restarting the server.
 
-Recommendation: Back up "titles.db" regularly to protect player collection data.
+Recommendation: Regularly back up the SQLite database to protect player collection data.
 
 ---
 
-📦 Installation Guide
-
-📋 Requirements
-
-Component| Requirement
-Java| 25
-Minecraft| 26.3
-Server Software| Paper / Purpur
-PlaceholderAPI| Optional
-Storage| SQLite
-
-🚀 Installation Steps
-
-1. Download or build the Vortex Title JAR.
-2. Place the JAR inside your server's "plugins" directory.
-3. Install PlaceholderAPI if you need placeholder integration.
-4. Restart your Minecraft server.
-5. Open the generated Vortex Title configuration folder.
-6. Customize the configuration according to your server's needs.
-
-📁 Plugin Directory
-
-plugins/
-└── VortexTitle/
-    ├── config.yml
-    └── titles.db
-
----
-
-🛠️ Building From Source
+🛠️・Building From Source
 
 Want to compile Vortex Title yourself?
 
 📋 Build Requirements
 
-- Java Development Kit 25
-- Gradle 9.x
-- Internet connection for dependency resolution
+- Java Development Kit 25.
+- Gradle 9.x.
+- Internet connection for dependency resolution.
 
-1. Clone Repository
+1️⃣ Clone Repository
 
-git clone https://github.com/YOUR_USERNAME/VortexTitle.git
+git clone https://github.com/kingdomvortex3-star/VortexTitle.git
 
-2. Enter Project Directory
+2️⃣ Enter Project Directory
 
 cd VortexTitle
 
-3. Build Plugin
+3️⃣ Build Plugin
 
 gradle build
 
-4. Locate Compiled JAR
+4️⃣ Locate Compiled JAR
 
 build/libs/VortexTitle-1.0.0.jar
 
-The generated JAR is ready to be installed on a compatible server after successful compilation and testing.
+The generated JAR can be installed on a compatible Minecraft server after successful compilation and testing.
 
 ---
 
-🗺️ Development Roadmap
+🗺️・Development Roadmap
 
 Feature| Status
 Permanent Title Storage| ✅
@@ -424,34 +475,34 @@ Additional Integrations| 🔜
 
 ---
 
-🐛 Bug Reports & Suggestions
+🐛・Bug Reports & Suggestions
 
-Found an issue or have an idea to improve Vortex Title?
+Found a bug or have an idea to improve Vortex Title?
 
 We welcome feedback, feature requests, and bug reports.
 
 When submitting a report, please include:
 
-- Minecraft server version
-- Java version
-- Vortex Title version
-- Relevant console logs
-- Steps to reproduce the issue
+- 🎮 Minecraft server version.
+- ☕ Java version.
+- 📦 Vortex Title version.
+- 📋 Relevant console logs.
+- 🔍 Steps to reproduce the issue.
 
 Please use the GitHub Issues section to report problems and suggest improvements.
 
 ---
 
-🤝 Credits & Development
+🤝・Credits & Developer
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Developed%20by-Vortex%20Teams-8B5CF6?style=for-the-badge"/>
+  <img src="https://img.shields.io/badge/DEVELOPED%20BY-VORTEX%20TEAMS-8B5CF6?style=for-the-badge"/>
 </p><p align="center">
   <b>VORTEX TEAMS</b>
   <br/>
-  Minecraft Plugin Development
+  Minecraft Plugin Development & Engineering
   <br/>
-  Custom Systems • Server Solutions • Plugin Engineering
+  Custom Systems • Server Solutions • Plugin Development
 </p>---
 
 <p align="center">
