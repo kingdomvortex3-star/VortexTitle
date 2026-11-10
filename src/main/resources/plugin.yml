@@ -2,30 +2,40 @@ name: VortexTitle
 version: '${version}'
 main: id.vortextitle.VortexTitlePlugin
 api-version: '26.3'
-author: Vortex Network
+author: Vortex Teams
 description: Permanent Custom Title System
+
 softdepend:
   - PlaceholderAPI
 
 commands:
   title:
-    description: VortexTitle Main Command
+    description: Main command for Vortex Title
     usage: /title
     aliases:
       - titles
 
 permissions:
   vortextitle.use:
+    description: Allows players to use the title system
     default: true
 
   vortextitle.admin:
+    description: Grants all Vortex Title staff permissions
     default: op
+    children:
+      vortextitle.give: true
+      vortextitle.take: true
+      vortextitle.reload: true
 
   vortextitle.give:
+    description: Allows giving titles to players
     default: op
 
   vortextitle.take:
+    description: Allows removing titles from players
     default: op
 
   vortextitle.reload:
+    description: Allows reloading Vortex Title configuration
     default: op
